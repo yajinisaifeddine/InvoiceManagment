@@ -3,7 +3,9 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "predeploy": "npm run build",
+        "deploy": "gh-pages -d build"
     },
     "devDependencies": {
         "autoprefixer": "^10.4.20",
@@ -15,6 +17,7 @@
         "vite": "^6.0.11"
     },
     "dependencies": {
-        "@fortawesome/fontawesome-free": "^6.7.2"
+        "@fortawesome/fontawesome-free": "^6.7.2",
+        "gh-pages": "^6.3.0"
     }
 }
