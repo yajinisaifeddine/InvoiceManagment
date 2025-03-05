@@ -123,6 +123,7 @@ class InvoiceController extends Controller
             if ($request->hasFile('copy')) {
                 // Delete the old file if it exists
                 if ($invoice->copy) {
+
                     Storage::disk('public')->delete($invoice->copy);
                 }
 
