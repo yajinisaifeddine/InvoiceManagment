@@ -15,13 +15,17 @@
 <body class="flex min-h-screen flex-col bg-gray-100">
     <!-- Navbar -->
     <x-navbar></x-navbar>
+    <div class="flex">
+
+        <x-sidebar :company="request()->route('id')??1"></x-sidebar>
 
 
-    <!-- Main Content (Expands to push the footer down) -->
-    <main class="min-h-[calc(100vh-128px)]">
-        <x-alert></x-alert>
-        @yield('content') <!-- This is where the page content will be injected -->
-    </main>
+
+        <main class="min-h-[calc(100vh-128px)] flex-1">
+            <x-alert></x-alert>
+            @yield('content') <!-- This is where the page content will be injected -->
+        </main>
+    </div>
 
     <!-- Footer (Sticks to bottom when content is short) -->
     <x-footer></x-footer>

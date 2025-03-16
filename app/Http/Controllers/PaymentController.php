@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\payment;
 use App\Models\company;
 use Exception;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 
 class PaymentController extends Controller
@@ -48,7 +50,7 @@ class PaymentController extends Controller
         // Add the company_id to the validated data
         $validatedData['company_id'] = $companyId;
 
-        // Handle file upload for 'proof'
+        // Handle file upload for 'copy'
         if ($request->hasFile('copy')) {
             $filePath = $request->file('copy')->store('payments', 'public');
             $validatedData['copy'] = $filePath;
@@ -67,7 +69,10 @@ class PaymentController extends Controller
      */
     public function show($id)
     {
-        // Fetch the payment by ID with its associated company
+        // Fetch the payment by ID with its
+        // associated company
+
+
         $payment = Payment::findOrFail($id);
         return view('payment.show', compact('payment'));
     }
@@ -105,8 +110,8 @@ class PaymentController extends Controller
                 $validatedData['date'] = $payment->date;
             }
 
-            // Handle file upload for 'proof'
-            if ($request->hasFile('proof')) {
+            // Handle file upload for 'copy'
+            if ($request->hasFile('copy')) {
                 // Delete the old file if it exists
                 if ($payment->copy) {
                     Storage::disk('public')->delete($payment->copy);
@@ -137,5 +142,19 @@ class PaymentController extends Controller
         } catch (Exception $e) {
             return redirect()->route('company.show', $company)->with('error', 'Payment was not deleted! ' . $e->getMessage());
         }
+    }
+    public function download($id)
+    {
+        $payment = Payment::findOrFail($id);
+        $filePath = public_path("storage/{$payment->copy}"); // Absolute path
+
+        if (!File::exists($filePath)) {
+            abort(404, 'payment file not found.');
+        }
+        $extension = pathinfo($filePath, PATHINFO_EXTENSION);
+        $fileName = "payment-{$payment->date}.{$extension}";
+
+
+        return Response::download($filePath, $fileName);
     }
 }

@@ -1,19 +1,19 @@
 <div class="rounded-lg bg-white p-4 shadow-md">
-    <h2 class="mb-4 inline text-xl font-semibold">Payment List</h2>
+    <h2 class="mb-4 inline text-xl font-semibold">Liste des Paiements</h2>
     <a href="{{ route('payment.create', $company) }}"
-        class="mb-4 cursor-pointer px-4 py-2 text-black hover:text-slate-600">Add
-        Payment</a>
+        class="mb-4 cursor-pointer px-4 py-2 text-black hover:text-slate-600">Ajouter
+        un Paiement</a>
     <table class="w-full border-collapse text-left">
         <thead>
             <tr class="border-b">
-                <th class="p-2">type</th>
+                <th class="p-2">Type</th>
                 <th class="p-2">Date</th>
-                <th class="p-2">Amount</th>
+                <th class="p-2">Montant</th>
                 <th class="p-2">Actions</th>
             </tr>
         </thead>
         <tbody>
-            <!-- Payment components  -->
+            <!-- Composants de paiement -->
             @foreach ($payments as $payment)
                 <tr class="border-b">
                     <td class="p-2"> {{ $payment->type }} </td>

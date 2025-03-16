@@ -14,8 +14,9 @@
                 <form id="search-form" action="{{ route('company.index') }}" method="GET"
                     class="hidden w-full max-w-md items-center md:flex">
 
-                    <input type="text" name="search" placeholder="Search..." autocomplete="off"
-                        class="w-full border-0 border-b-2 border-gray-300 bg-transparent px-4 py-2 focus:border-blue-600 focus:outline-none focus:ring-0" />
+                    <input type="text" name="search" placeholder="Chercher..." autocomplete="off"
+                        class="w-full border-0 border-b-2 border-gray-300 bg-transparent px-4 py-2 focus:border-blue-600 focus:outline-none focus:ring-0"
+                        value="{{ request()->get('search') }}" />
                     <button type="submit" class="px-4 py-2 text-gray-500 hover:text-blue-600 focus:outline-none">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">

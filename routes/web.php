@@ -1,12 +1,12 @@
 <?php
 
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\Auth\LoginController;
+use Illuminate\Support\Facades\Redirect;
 
 // Login Routes
 Route::get('/login', [LoginController::class, 'index'])->name('login.form');
@@ -45,6 +45,7 @@ Route::middleware('custom.auth')->group(function () {
 
 
 
+
     Route::resource('invoice', InvoiceController::class);
 
     Route::get('/company/{company}/add-invoice', [InvoiceController::class, 'create'])->name('invoice.create');
@@ -52,8 +53,6 @@ Route::middleware('custom.auth')->group(function () {
     Route::post('/company/{company}/add-invoice', [InvoiceController::class, 'store'])->name('invoice.store');
 
     Route::get('/company/{company}/delete-invoice/{invoice}', [InvoiceController::class, 'destroy'])->name('invoice.destroy');
-
-    Route::get('/invoice/{id}/print', [InvoiceController::class,   'print'])->name('invoice.print');
 
     Route::get('/invoice/{id}/download', [InvoiceController::class, 'download'])->name('invoice.download');
 
@@ -69,7 +68,6 @@ Route::middleware('custom.auth')->group(function () {
 
     Route::get('/company/{company}/delete-payment/{payment}', [PaymentController::class, 'destroy'])->name('payment.destroy');
 
-    Route::get('/payment/{id}/print', [PaymentController::class,   'print'])->name('payment.print');
 
     Route::get('/payment/{id}/download', [PaymentController::class, 'download'])->name('payment.download');
 
@@ -77,21 +75,6 @@ Route::middleware('custom.auth')->group(function () {
 
     Route::post('/clear-session', function () {
         session()->forget(['success', 'error']);
-        return response()->json(['status' => 'success']);
+        return redirect()->back();
     })->name('clear-session');
 });
-
-use App\Http\Controllers\Auth\VerificationController;
-
-// Email verification routes
-Route::get('/email/verify', [VerificationController::class, 'notice'])
-    ->middleware('auth')
-    ->name('verification.notice');
-
-Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])
-    ->middleware(['auth', 'signed'])
-    ->name('verification.verify');
-
-Route::post('/email/resend', [VerificationController::class, 'resend'])
-    ->middleware(['auth', 'throttle:6,1'])
-    ->name('verification.resend');

@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="flex min-h-[calc(100vh-128px)] justify-center">
-        <x-home_sidebar></x-home_sidebar>
+
         <div class="mt-5 w-full">
 
             @foreach ($companies as $index => $companyData)

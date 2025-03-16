@@ -2,6 +2,7 @@
 
 namespace App\View\Components;
 
+use Auth;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
@@ -15,10 +16,7 @@ class navbar extends Component
     {
         //
     }
-    public function isLoggedIn() {
-        return Auth::check();
 
-    }
     /**
      * Get the view / contents that represent the component.
      */

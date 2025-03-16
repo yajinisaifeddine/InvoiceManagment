@@ -6,11 +6,8 @@ use App\Models\company;
 use App\Models\invoice;
 use App\Models\payment;
 use Exception;
-use Illuminate\Container\Attributes\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-
-
 
 
 class CompanyController extends Controller
@@ -18,33 +15,24 @@ class CompanyController extends Controller
 
     public function index()
     {
-        $sort  = request()->get('sort');
+        $sort = request()->get('sort');
         $search = request()->get('search'); // Using the request helper
         $user = auth('CustomAuth')->id();
         // Retrieve companies based on the search parameter
-        $companies = Company::where('user_id', $user) // Filter by user_id
-            ->when($search, function ($query, $search) {
-                return $query->where(function ($q) use ($search) {
-                    $q->where('name', 'like', "%{$search}%")
-                        ->orWhere('director', 'like', "%{$search}%");
-                });
-            })
-            ->get();
-
-        // Calculate payment amounts for each company
-        $paymentsAmounts = $companies->map(fn($company) => $company->payments->sum('amount'));
-        // Calculate invoice amounts for each company
-        $invoicesAmounts = $companies->map(fn($company) => $company->invoices->sum('amount'));
-
-        // Merge the data into a single collection
-        $companies = $companies->map(function ($company, $index) use ($paymentsAmounts, $invoicesAmounts) {
-            return [
+        $companies = Company::where('user_id', $user)
+            ->when($search, fn($query) => $query->where(fn($q) => $q->where('name', 'like', "%{$search}%")
+                ->orWhere('director', 'like', "%{$search}%")
+            )
+            )
+            ->with(['payments', 'invoices']) // Eager load relationships
+            ->get()
+            ->map(fn($company) => [
                 'company' => $company,
-                'payment_amount' => $paymentsAmounts[$index],
-                'invoice_amount' => $invoicesAmounts[$index],
-                'difference' => $paymentsAmounts[$index] - $invoicesAmounts[$index],
-            ];
-        });
+                'payment_amount' => $company->payments->sum('amount'),
+                'invoice_amount' => $company->invoices->sum('amount'),
+                'difference' => $company->payments->sum('amount') - $company->invoices->sum('amount'),
+            ]);
+
 
         // Sort the merged collection based on the sort parameter
         if ($sort) {
@@ -83,6 +71,7 @@ class CompanyController extends Controller
 
         return view('company.index', compact('companies', 'search'));
     }
+
     public function show($id)
     {
         $company = Company::findOrFail($id);
@@ -95,18 +84,18 @@ class CompanyController extends Controller
 
 
         $difference = $totalInvoiceAmount - $totalPaymentAmount;
-        $differenceColor = $difference < 0 ? 'text-green-600' : 'text-red-700';
-        if ($difference < 0) $difference *= -1;
-
+        $differenceColor = $difference > 0 ? 'text-red-700' : 'text-green-700';
+        $difference = $difference > 0 ? $difference : $difference * -1;
 
         return view('company.company', compact(
             'company',
             'invoices',
-            'totalInvoiceAmount',
             'payments',
             'totalPaymentAmount',
-            'difference',
-            'differenceColor'
+            'totalInvoiceAmount',
+            'differenceColor',
+            'difference'
+
         ));
     }
 
@@ -125,8 +114,6 @@ class CompanyController extends Controller
             'phone' => 'required|string|max:20',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
-
-
 
 
         try {

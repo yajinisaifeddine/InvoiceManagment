@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 
 use App\Models\invoice;
 use Exception;
+use Illuminate\Support\Facades\File;
+use GuzzleHttp\Psr7\Response;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response as FacadesResponse;
 use Illuminate\Support\Facades\Storage;
 
 
@@ -47,27 +50,30 @@ class InvoiceController extends Controller
      */
     public function store(Request $request, $companyId)
     {
+
         // Validate the request data
+        $validatedData = $request->validate([
+            'number' => 'required|string|max:255|unique:invoices',
+            'date' => 'nullable|date',
+            'amount' => 'required|numeric|min:0',
+            'copy' => 'required|mimes:jpeg,png,jpg,gif,svg,pdf', // Max 2MB
+        ]);
+
+
+
+        // Handle file upload for 'copy'
+        if ($request->hasFile('copy')) {
+            $filePath = $request->file('copy')->store('invoices', 'public');
+            $validatedData['copy'] = $filePath;
+        }
         try {
             // Validate the request data
-            $validatedData = $request->validate([
-                'number' => 'required|string|max:255|unique:invoices',
-                'date' => 'nullable|date',
-                'amount' => 'required|numeric|min:0',
-                'copy' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Max 2MB
-            ]);
 
             // Set default value for date if not provided
             $validatedData['date'] = $validatedData['date'] ?? now();
 
             // Add the company_id to the validated data
             $validatedData['company_id'] = $companyId;
-
-            // Handle file upload for 'copy'
-            if ($request->hasFile('copy')) {
-                $filePath = $request->file('copy')->store('invoices', 'public');
-                $validatedData['copy'] = $filePath;
-            }
 
             // Create the invoice
             Invoice::create($validatedData);
@@ -112,7 +118,7 @@ class InvoiceController extends Controller
                 'number' => 'required|string|max:255|unique:invoices,number,' . $invoice->id,
                 'date' => 'nullable|date',
                 'amount' => 'required|numeric|min:0',
-                'copy' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Max 2MB
+                'copy' => 'nullable|mimes:jpeg,png,jpg,gif,svg,pdf|max:2048', // Max 2MB
             ]);
 
             if (!$request->date) {
@@ -120,6 +126,7 @@ class InvoiceController extends Controller
             }
 
             // Handle file upload for 'copy'
+
             if ($request->hasFile('copy')) {
                 // Delete the old file if it exists
                 if ($invoice->copy) {
@@ -131,7 +138,6 @@ class InvoiceController extends Controller
                 $filePath = $request->file('copy')->store('invoices', 'public');
                 $validatedData['copy'] = $filePath;
             }
-
             // Update the invoice
             $invoice->update($validatedData);
             // dd($invoice);
@@ -159,6 +165,23 @@ class InvoiceController extends Controller
         }
     }
 
-    public function download($id) {}
-    public function print($id) {}
+
+    public function download($id)
+    {
+        try {
+
+            $invoice = Invoice::findOrFail($id);
+            $filePath = public_path("storage/{$invoice->copy}"); // Absolute path
+
+            if (!File::exists($filePath)) {
+                abort(404, 'Invoice file not found.');
+            }
+            $extension = pathinfo($filePath, PATHINFO_EXTENSION);
+            $fileName = "{$invoice->number}.{$extension}";
+
+            return FacadesResponse::download($filePath, $fileName);
+        } catch (Exception $e) {
+            return redirect()->route('invoice.show', $invoice->id)->with('error', 'Invoice was not downloaded! ' . $e->getMessage());
+        }
+    }
 }

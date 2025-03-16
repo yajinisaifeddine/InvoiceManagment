@@ -72,3 +72,7 @@
         </div>
     </div>
 @endif
+
+@php
+    redirect()->route('clear-session');
+@endphp

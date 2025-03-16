@@ -1,19 +1,19 @@
 <div class="rounded-lg bg-white p-4 shadow-md">
-    <h2 class="mb-4 inline text-xl font-semibold">Invoice List</h2>
+    <h2 class="mb-4 inline text-xl font-semibold">Liste des Factures</h2>
     <a href="{{ route('invoice.create', $company) }}"
-        class="mb-4 cursor-pointer px-4 py-2 text-black hover:text-slate-600">Add
-        invoice</a>
+        class="mb-4 cursor-pointer px-4 py-2 text-black hover:text-slate-600">Ajouter une
+        facture</a>
     <table class="w-full border-collapse text-left">
         <thead>
             <tr class="border-b">
-                <th class="p-2">number</th>
+                <th class="p-2">Numéro</th>
                 <th class="p-2">Date</th>
-                <th class="p-2">Amount</th>
+                <th class="p-2">Montant</th>
                 <th class="p-2">Actions</th>
             </tr>
         </thead>
         <tbody>
-            <!-- Payment components  -->
+            <!-- Composants de facture  -->
             @foreach ($invoices as $invoice)
                 <tr class="border-b">
                     <td class="p-2"> {{ $invoice->number }} </td>

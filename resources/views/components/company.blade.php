@@ -1,10 +1,16 @@
 <a class="company mx-auto block max-w-4xl" href="{{ route('company.show', $id) }}">
+    @php
+        $difference = $invoices - $payments;
+        $differenceColor = $difference > 0 ? 'text-red-600' : 'text-green-600';
+        $backgroundColor = $difference > 0 ? 'bg-red-50' : ($difference == 0 ? 'bg-white' : 'bg-green-50');
+    @endphp
     <div class="p-3">
-        <div class="flex cursor-pointer flex-row items-center justify-between gap-6 rounded-md bg-white p-3">
-            <!-- Company Logo and Info -->
+        <div
+            class="{{ $backgroundColor }} flex cursor-pointer flex-row items-center justify-between gap-6 rounded-md p-2">
+            <!-- Logo et Informations de l'Entreprise -->
             <div class="flex w-full items-center space-x-4 md:w-1/2">
                 <div class="flex-shrink-0">
-                    <img src="{{ asset('storage/' . $logo) }}" alt="Company Logo"
+                    <img src="{{ asset('storage/' . $logo) }}" alt="Logo de l'Entreprise"
                         class="h-16 w-16 rounded-lg object-cover shadow-sm">
                 </div>
                 <div class="flex flex-col text-center md:text-left">
@@ -17,36 +23,32 @@
                 </div>
             </div>
 
-            <!-- Amounts and Percentage Section -->
+            <!-- Section Montants et Pourcentage -->
             <div class="flex w-full items-center justify-end gap-4 md:w-1/2">
-                <!-- Paid, Rest, and Total -->
+                <!-- Payé, Restant et Total -->
                 <div class="flex flex-col items-end space-y-2">
-                    <!-- Paid Amount -->
+                    <!-- Montant Payé -->
                     <div class="flex items-center space-x-2">
                         <span class="font-semibold text-black">
-                            payments: {{ number_format($payments, 2) }} DT
+                            Paiements : {{ number_format($payments, 2) }} DT
                         </span>
                     </div>
-                    <!-- Total Invoices -->
+                    <!-- Factures Totales -->
                     <div class="flex items-center space-x-2">
                         <span class="font-semibold text-black">
-                            Invoices: {{ number_format($invoices, 2) }} DT
+                            Factures : {{ number_format($invoices, 2) }} DT
                         </span>
                     </div>
-                    <!-- Difference (Dynamic Color) -->
-                    @php
-                        $difference = $invoices - $payments;
-                        $differenceColor =
-                            $difference > 0 ? 'text-red-600' : ($difference == 0 ? 'text-gray-600' : 'text-green-600');
-                    @endphp
+                    <!-- Différence (Couleur Dynamique) -->
+
                     <div class="flex items-center space-x-2">
                         <span class="{{ $differenceColor }} font-semibold">
-                            Difference: {{ number_format(abs($difference), 2) }} DT
+                            Différence : {{ number_format(abs($difference), 2) }} DT
                         </span>
                     </div>
                 </div>
 
-                <!-- Percentage -->
+                <!-- Pourcentage -->
                 <div class="flex items-center">
                     <span class="font-sans text-3xl font-bold">
                         @if ($invoices > 0)
