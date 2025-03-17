@@ -1,3 +1,5 @@
+@if (auth('CustomAuth')->check())
+
 <aside
     class="relative left-0 top-0 z-40 hidden h-[calc(100vh-128px)] w-64 flex-col bg-gradient-to-b from-gray-100 to-gray-300 transition-transform md:flex">
     <!-- En-tête de la Barre Latérale -->
@@ -81,3 +83,4 @@
         </div>
     </div>
 </aside>
+@endif

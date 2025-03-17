@@ -132,9 +132,9 @@ class CompanyController extends Controller
 
             $company = Company::create($validatedData);
 
-            return redirect()->route('company.index')->with('success', 'Company added successfully!');
+            return redirect()->route('company.index')->with('success', 'Société ajoutée avec succès !');
         } catch (Exception $e) {
-            return redirect()->route('company.create')->with('error', 'An error occurred while adding the company: ' . $e->getMessage());
+            return redirect()->route('company.create')->with('error', 'Une erreur s\'est produite lors de l\'ajout de la société ');
         }
     }
 
@@ -182,10 +182,10 @@ class CompanyController extends Controller
             ]);
 
             return redirect()->route('company.show', ['company' => $id])
-                ->with('success', 'Company updated successfully!');
+                ->with('success', 'La société a été mise à jour avec succès !');
         } catch (\Exception $e) {
             return redirect()->route('company.edit', ['company' => $id])
-                ->with('error', 'An error occurred while updating the company: ' . $e->getMessage());
+                ->with('error', 'Une erreur s\'est produite lors de la mise à jour de la société ');
         }
     }
 
@@ -195,9 +195,9 @@ class CompanyController extends Controller
         try {
             $company = Company::findOrFail($id);
             $company->delete();
-            return redirect()->route('company.index')->with('success', 'Company deleted successfully!');
+            return redirect()->route('company.index')->with('success', 'Société supprimée avec succès!');
         } catch (Exception $e) {
-            return redirect()->route('company.index')->with('error', 'Company was deleted!');
+            return redirect()->route('company.index')->with('error', 'La société n\'a pas été supprimée !');
         }
     }
 }

@@ -127,9 +127,9 @@ class PaymentController extends Controller
             $payment->update($validatedData);
             // Redirect with a success message
             return redirect()->route('company.show', $payment->company_id)
-                ->with('success', 'Payment created successfully!');
+                ->with('success', 'Paiement créé avec succès !');
         } catch (Exception $e) {
-            return redirect()->route('payment.edit', $payment->id)->with('error', ' Payment was not created ' . $e->getMessage());
+            return redirect()->route('payment.edit', $payment->id)->with('error', ' Le paiement n\'a pas été créé !');
         }
     }
 
@@ -138,9 +138,9 @@ class PaymentController extends Controller
         try {
             $payment = Payment::findOrFail($id);
             $payment->delete();
-            return redirect()->route('company.show', $company)->with('success', 'Payment deleted successfully!');
+            return redirect()->route('company.show', $company)->with('success', 'Paiement supprimé avec succès !');
         } catch (Exception $e) {
-            return redirect()->route('company.show', $company)->with('error', 'Payment was not deleted! ' . $e->getMessage());
+            return redirect()->route('company.show', $company)->with('error', 'Le paiement n\'a pas été supprimé ! ' );
         }
     }
     public function download($id)

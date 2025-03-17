@@ -32,7 +32,7 @@ class LoginController extends Controller
             if (RateLimiter::tooManyAttempts($key, 3)) {
                 $seconds = RateLimiter::availableIn($key);
                 return back()->with([
-                    'error' => "Too many login attempts. Please try again in <span id='countdown' data-seconds='{$seconds}'></span> seconds."
+                    'error' => "Trop de tentatives de connexion. Veuillez réessayer dans <span id='countdown' data-seconds='{$seconds}'></span> seconds."
                 ]);
             }
 
@@ -42,7 +42,7 @@ class LoginController extends Controller
                 RateLimiter::clear($key);
 
                 // Redirect to the intended page
-                return redirect()->intended('/')->with('success', 'Login successful!');
+                return redirect()->intended('/')->with('success', 'Connexion réussie !');
             }
 
             // Increment the rate limiter on failed login
@@ -50,20 +50,20 @@ class LoginController extends Controller
 
             // Return with error message
             return back()->with([
-                'error' => 'Email or Password are incorrect',
+                'error' => 'L\'e-mail ou le mot de passe sont incorrects',
             ]);
         } catch (Exception $e) {
 
 
             // Return with error message
             return back()->with([
-                'error' => 'An error occurred' . $e->getMessage(),
+                'error' => 'Une erreur s\'est produite' . $e->getMessage(),
             ]);
         }
     }
     public function logout(Request $request)
     {
         Auth::guard('CustomAuth')->logout();
-        return redirect()->intended('/')->with('success', 'logout successful!');
+        return redirect()->intended('/')->with('success', 'déconnexion réussie !');
     }
 }

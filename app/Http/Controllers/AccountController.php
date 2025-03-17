@@ -50,10 +50,10 @@ class AccountController extends Controller
 
             auth('CustomAuth')->login($account);
             // Redirect or return a response
-            return redirect()->route('company.index')->with('success', 'Account created successfully!');
+            return redirect()->route('company.index')->with('success', 'Compte créé avec succès !');
         } catch (Exception $e) {
 
-            return redirect()->route('account.create')->with('error', 'Account was not created! ' . $e->getMessage());
+            return redirect()->route('account.create')->with('error', 'Le compte n\'a pas été créé ! ' . $e->getMessage());
         }
     }
 
