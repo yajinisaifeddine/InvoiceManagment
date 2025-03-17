@@ -61,7 +61,7 @@ class PaymentController extends Controller
 
         // Redirect with a success message
         return redirect()->route('company.show', $companyId)
-            ->with('success', 'Payment created successfully!');
+            ->with('success', 'Paiement créé avec succès !');
     }
 
     /**
@@ -127,9 +127,9 @@ class PaymentController extends Controller
             $payment->update($validatedData);
             // Redirect with a success message
             return redirect()->route('company.show', $payment->company_id)
-                ->with('success', 'Paiement créé avec succès !');
+                ->with('success', 'Paiement mis à jour avec succès !');
         } catch (Exception $e) {
-            return redirect()->route('payment.edit', $payment->id)->with('error', ' Le paiement n\'a pas été créé !');
+            return redirect()->route('payment.edit', $payment->id)->with('error', ' Le paiement n\'a pas été mis à jour !');
         }
     }
 
@@ -149,7 +149,7 @@ class PaymentController extends Controller
         $filePath = public_path("storage/{$payment->copy}"); // Absolute path
 
         if (!File::exists($filePath)) {
-            abort(404, 'payment file not found.');
+            abort(404, 'fichier de paiement introuvable.');
         }
         $extension = pathinfo($filePath, PATHINFO_EXTENSION);
         $fileName = "payment-{$payment->date}.{$extension}";

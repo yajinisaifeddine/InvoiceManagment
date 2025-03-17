@@ -80,10 +80,10 @@ class InvoiceController extends Controller
 
             // Redirect with a success message
             return redirect()->route('company.show', $companyId)
-                ->with('success', 'Invoice created successfully!');
+                ->with('success', 'Facture créée avec succès !');
         } catch (Exception $e) {
             return redirect()->route('invoice.create', $companyId)
-                ->with('error', 'Invoice was not created ! ' . $e->getMessage());
+                ->with('error', 'La facture n\'a pas été créée !');
         }
     }
 
@@ -144,10 +144,10 @@ class InvoiceController extends Controller
 
             // Redirect with a success message
             return redirect()->route('company.show', $invoice->company_id)
-                ->with('success', 'Invoice updated successfully!');
+                ->with('success', 'Facture mise à jour avec succès !');
         } catch (Exception $e) {
             return redirect()->route('invoice.edit', $invoice->id)
-                ->with('error', 'Invoice was updated !' . $e->getMessage());
+                ->with('error', 'La facture a été mise à jour !' );
         }
     }
 
@@ -159,9 +159,9 @@ class InvoiceController extends Controller
         try {
             $invoice = Invoice::findOrFail($id);
             $invoice->delete();
-            return redirect()->route('company.show', $company)->with('success', 'Invoice deleted successfully!');
+            return redirect()->route('company.show', $company)->with('success', 'Facture supprimée avec succès !');
         } catch (Exception $e) {
-            return redirect()->route('company.show', $company)->with('error', 'Invoice was not deleted! ' . $e->getMessage());
+            return redirect()->route('company.show', $company)->with('error', 'La facture n\'a pas été supprimée ! ' );
         }
     }
 
@@ -174,14 +174,14 @@ class InvoiceController extends Controller
             $filePath = public_path("storage/{$invoice->copy}"); // Absolute path
 
             if (!File::exists($filePath)) {
-                abort(404, 'Invoice file not found.');
+                abort(404, 'Fichier de facture introuvable.');
             }
             $extension = pathinfo($filePath, PATHINFO_EXTENSION);
             $fileName = "{$invoice->number}.{$extension}";
 
             return FacadesResponse::download($filePath, $fileName);
         } catch (Exception $e) {
-            return redirect()->route('invoice.show', $invoice->id)->with('error', 'Invoice was not downloaded! ' . $e->getMessage());
+            return redirect()->route('invoice.show', $invoice->id)->with('error', 'La facture n\'a pas été téléchargée !');
         }
     }
 }
